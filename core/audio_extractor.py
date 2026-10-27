@@ -1,22 +1,28 @@
-import subprocess
 import os
-from basic_pitch import ICASSP_2022_MODEL_PATH
+import subprocess
+
 
 def extract_audio_from_video(video_path: str, output_wav_path: str) -> str:
-    """Extracts 22050Hz mono WAV audio suitable for MIR analysis."""
+    """Extracts 16kHz mono WAV audio from a video using ffmpeg."""
     command = [
         "ffmpeg", "-y", "-i", video_path,
-        "-vn", "-acodec", "pcm_s16le",
-        "-ar", "22050", "-ac", "1", output_wav_path
+        "-ac", "1", "-ar", "16000",
+        output_wav_path
     ]
-    subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+    subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     return output_wav_path
 
-def convert_audio_to_midi(audio_path: str, output_dir: str):
-    """Generates standard MIDI (.mid) from polyphonic audio."""
-    from basic_pitch.inference import predict_and_save, ICASSP_2022_MODEL_PATH
 
-    # Check for existing file and delete it to prevent OSError
+def convert_audio_to_midi(audio_path: str, output_dir: str):
+    """Generates standard MIDI (.mid) from polyphonic audio using basic-pitch."""
+    try:
+        from basic_pitch import ICASSP_2022_MODEL_PATH
+        from basic_pitch.inference import predict_and_save
+    except ImportError:
+        raise ImportError(
+            "basic-pitch is not installed. Ensure 'basic-pitch' is listed in requirements.txt."
+        )
+
     base_name = os.path.splitext(os.path.basename(audio_path))[0]
     existing_midi_path = os.path.join(output_dir, f"{base_name}_basic_pitch.mid")
     if os.path.exists(existing_midi_path):
