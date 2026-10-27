@@ -1,0 +1,10 @@
+venv/
+__pycache__/
+*.pyc
+data/uploads/
+*.mp4
+*.wav
+*.mp3
+data/outputs/*
+!data/outputs/.gitkeep
+.streamlit/
