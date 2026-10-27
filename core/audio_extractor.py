@@ -1,6 +1,5 @@
 import subprocess
 import os
-from basic_pitch.inference import predict_and_save
 from basic_pitch import ICASSP_2022_MODEL_PATH
 
 def extract_audio_from_video(video_path: str, output_wav_path: str) -> str:
